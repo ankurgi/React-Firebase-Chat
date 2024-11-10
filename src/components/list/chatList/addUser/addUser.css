@@ -1,4 +1,4 @@
-.addUser{
+.addUser {
   width: max-content;
   height: max-content;
   padding: 30px;
@@ -10,54 +10,79 @@
   left: 0;
   right: 0;
   margin: auto;
+  color: white;
+}
 
-  form{
-    display: flex;
-    gap: 20px;
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+}
 
-    input{
-      padding: 20px;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-    }
+.popupHeader h3 {
+  margin: 0;
+}
 
-    button{
-      padding: 20px;
-      border-radius: 10px;
-      background-color: #1a73e8;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-  }
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 
-  .user{
-    margin-top: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+form {
+  display: flex;
+  gap: 20px;
+}
 
-    .detail{
-      display: flex;
-      align-items: center;
-      gap: 20px;
+form input {
+  padding: 20px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
 
-      img{
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-    }
+form button {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
 
-    button{
-      padding: 10px;
-      border-radius: 10px;
-      background-color: #1a73e8;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-  }
+.user {
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user .detail {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user .detail img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user button {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  cursor: pointer;
 }

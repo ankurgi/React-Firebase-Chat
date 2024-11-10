@@ -6,25 +6,12 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
-import upload from "../../lib/upload";
+import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore"; // Import necessary Firestore functions
+
 
 const Login = () => {
-  const [avatar, setAvatar] = useState({
-    file: null,
-    url: "",
-  });
-
+  const DEFAULT_AVATAR_URL = "https://i.pravatar.cc/150?img=2"; // Fixed avatar URL for all users
   const [loading, setLoading] = useState(false);
-
-  const handleAvatar = (e) => {
-    if (e.target.files[0]) {
-      setAvatar({
-        file: e.target.files[0],
-        url: URL.createObjectURL(e.target.files[0]),
-      });
-    }
-  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -34,27 +21,29 @@ const Login = () => {
     const { username, email, password } = Object.fromEntries(formData);
 
     // VALIDATE INPUTS
-    if (!username || !email || !password)
-      return toast.warn("Please enter inputs!");
-    if (!avatar.file) return toast.warn("Please upload an avatar!");
+    if (!username || !email || !password) {
+      toast.warn("Please enter all required inputs!");
+      setLoading(false);
+      return;
+    }
 
     // VALIDATE UNIQUE USERNAME
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("username", "==", username));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      return toast.warn("Select another username");
+      toast.warn("Select another username");
+      setLoading(false);
+      return;
     }
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
-      const imgUrl = await upload(avatar.file);
-
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
-        avatar: imgUrl,
+        avatar: DEFAULT_AVATAR_URL, // Use fixed avatar URL
         id: res.user.uid,
         blocked: [],
       });
@@ -104,14 +93,14 @@ const Login = () => {
         <h2>Create an Account</h2>
         <form onSubmit={handleRegister}>
           <label htmlFor="file">
-            <img src={avatar.url || "./avatar.png"} alt="" />
+            <img src={DEFAULT_AVATAR_URL} alt="Avatar" /> {/* Display default avatar */}
             Upload an image
           </label>
           <input
             type="file"
             id="file"
             style={{ display: "none" }}
-            onChange={handleAvatar}
+            disabled // Disable the upload input as it's not needed
           />
           <input type="text" placeholder="Username" name="username" />
           <input type="text" placeholder="Email" name="email" />

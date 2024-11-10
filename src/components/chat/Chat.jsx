@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./chat.css";
 import EmojiPicker from "emoji-picker-react";
-import {
-  arrayUnion,
-  doc,
-  getDoc,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
+import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useChatStore } from "../../lib/chatStore";
 import { useUserStore } from "../../lib/userStore";
@@ -15,7 +9,7 @@ import upload from "../../lib/upload";
 import { format } from "timeago.js";
 
 const Chat = () => {
-  const [chat, setChat] = useState();
+  const [chat, setChat] = useState({ messages: [] });
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [img, setImg] = useState({
@@ -24,9 +18,7 @@ const Chat = () => {
   });
 
   const { currentUser } = useUserStore();
-  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
-    useChatStore();
-
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore();
   const endRef = useRef(null);
 
   useEffect(() => {
@@ -35,7 +27,7 @@ const Chat = () => {
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
-      setChat(res.data());
+      setChat(res.data() || { messages: [] });
     });
 
     return () => {
@@ -101,13 +93,13 @@ const Chat = () => {
       });
     } catch (err) {
       console.log(err);
-    } finally{
-    setImg({
-      file: null,
-      url: "",
-    });
+    } finally {
+      setImg({
+        file: null,
+        url: "",
+      });
 
-    setText("");
+      setText("");
     }
   };
 

@@ -17,6 +17,7 @@ import { useUserStore } from "../../../../lib/userStore";
 
 const AddUser = () => {
   const [user, setUser] = useState(null);
+  const [closePopup, setClosePopup] = useState(false); // State to control popup visibility
 
   const { currentUser } = useUserStore();
 
@@ -69,27 +70,35 @@ const AddUser = () => {
           updatedAt: Date.now(),
         }),
       });
+
+      setClosePopup(true); // Close popup after adding user
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <div className="addUser">
-      <form onSubmit={handleSearch}>
-        <input type="text" placeholder="Username" name="username" />
-        <button>Search</button>
-      </form>
-      {user && (
-        <div className="user">
-          <div className="detail">
-            <img src={user.avatar || "./avatar.png"} alt="" />
-            <span>{user.username}</span>
-          </div>
-          <button onClick={handleAdd}>Add User</button>
+    !closePopup && ( // Conditionally render popup based on closePopup state
+      <div className="addUser">
+        <div className="popupHeader">
+          <h3>Add User</h3>
+          <button className="closeButton" onClick={() => setClosePopup(true)}>X</button>
         </div>
-      )}
-    </div>
+        <form onSubmit={handleSearch}>
+          <input type="text" placeholder="Username" name="username" />
+          <button>Search</button>
+        </form>
+        {user && (
+          <div className="user">
+            <div className="detail">
+              <img src={user.avatar || "./avatar.png"} alt="" />
+              <span>{user.username}</span>
+            </div>
+            <button onClick={handleAdd}>Add User</button>
+          </div>
+        )}
+      </div>
+    )
   );
 };
 
