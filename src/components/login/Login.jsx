@@ -7,26 +7,26 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
 import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore"; // Import necessary Firestore functions
-
-
+ 
+ 
 const Login = () => {
   const DEFAULT_AVATAR_URL = "https://i.pravatar.cc/150?img=2"; // Fixed avatar URL for all users
   const [loading, setLoading] = useState(false);
-
+ 
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-
+ 
     const { username, email, password } = Object.fromEntries(formData);
-
+ 
     // VALIDATE INPUTS
     if (!username || !email || !password) {
       toast.warn("Please enter all required inputs!");
       setLoading(false);
       return;
     }
-
+ 
     // VALIDATE UNIQUE USERNAME
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("username", "==", username));
@@ -36,10 +36,10 @@ const Login = () => {
       setLoading(false);
       return;
     }
-
+ 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-
+ 
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
@@ -47,11 +47,11 @@ const Login = () => {
         id: res.user.uid,
         blocked: [],
       });
-
+ 
       await setDoc(doc(db, "userchats", res.user.uid), {
         chats: [],
       });
-
+ 
       toast.success("Account created! You can login now!");
     } catch (err) {
       console.log(err);
@@ -60,14 +60,14 @@ const Login = () => {
       setLoading(false);
     }
   };
-
+ 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+ 
     const formData = new FormData(e.target);
     const { email, password } = Object.fromEntries(formData);
-
+ 
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
@@ -77,7 +77,7 @@ const Login = () => {
       setLoading(false);
     }
   };
-
+ 
   return (
     <div className="login">
       <div className="item">
@@ -92,10 +92,7 @@ const Login = () => {
       <div className="item">
         <h2>Create an Account</h2>
         <form onSubmit={handleRegister}>
-          <label htmlFor="file">
-            <img src={DEFAULT_AVATAR_URL} alt="Avatar" /> {/* Display default avatar */}
-            Upload an image
-          </label>
+          
           <input
             type="file"
             id="file"
@@ -111,5 +108,6 @@ const Login = () => {
     </div>
   );
 };
-
+ 
 export default Login;
+ 
